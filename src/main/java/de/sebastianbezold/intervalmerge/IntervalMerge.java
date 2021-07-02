@@ -1,6 +1,7 @@
 package de.sebastianbezold.intervalmerge;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.lang.Math.max;
@@ -28,6 +29,8 @@ public class IntervalMerge {
         if (intervalsToMerge.size() == 1) {
             return new ArrayList<>(intervalsToMerge);
         }
+
+        intervalsToMerge.sort(Comparator.comparingInt(a -> a.lowerBound));
 
         List<Interval> resultingIntervals = new ArrayList<>();
         for (int i = 0; i < intervalsToMerge.size() - 1; i++) {

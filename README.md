@@ -8,8 +8,6 @@ The application is build as Java command-line application.
 ## Assumptions
 
 1) Input intervals are always input as lowerBound < upperBound ([1,3] and not [3,1])
-2) Input intervals are passed as ordered list. Meaning the lowerBound of interval n is lower that the lowerBound of
-   interval n+1.
 
 ## Build and Test
 

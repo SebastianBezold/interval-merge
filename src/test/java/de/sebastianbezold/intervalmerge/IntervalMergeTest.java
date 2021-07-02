@@ -67,6 +67,24 @@ class IntervalMergeTest {
         );
     }
 
+    @Test
+    void shouldMergeIndependentOfOrder() {
+        givenIntervalsToMerge(
+            new Interval(1, 4),
+            new Interval(200, 300),
+            new Interval(3, 7),
+            new Interval(199, 201)
+        );
+
+        whenMergingIntervals();
+
+        thenNumberOfResultingMergedIntervalsIs(2);
+        thenMergedIntervalsContain(
+            new Interval(1, 7),
+            new Interval(199, 300)
+        );
+    }
+
     private void givenIntervalsToMerge(Interval... intervals) {
         if (intervals != null) {
             this.intervalsToMerge = Arrays.asList(intervals);
