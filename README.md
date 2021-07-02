@@ -7,8 +7,6 @@ The application is build as Java command-line application.
 
 ## Assumptions
 
-1) Input intervals are always input as lowerBound < upperBound ([1,3] and not [3,1])
-
 ## Build and Test
 
 The project is setup using maven as dependency management and build tool and uses Java 11. You can build the project by

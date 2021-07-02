@@ -70,7 +70,7 @@ class IntervalMergeTest {
     @Test
     void shouldMergeIndependentOfOrder() {
         givenIntervalsToMerge(
-            new Interval(1, 4),
+            new Interval(-1, 4),
             new Interval(200, 300),
             new Interval(3, 7),
             new Interval(199, 201)
@@ -80,7 +80,7 @@ class IntervalMergeTest {
 
         thenNumberOfResultingMergedIntervalsIs(2);
         thenMergedIntervalsContain(
-            new Interval(1, 7),
+            new Interval(-1, 7),
             new Interval(199, 300)
         );
     }

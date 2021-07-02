@@ -2,14 +2,17 @@ package de.sebastianbezold.intervalmerge;
 
 import java.util.Objects;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 public class Interval {
 
     public final int lowerBound;
     public final int upperBound;
 
     public Interval(int lowerBound, int upperBound) {
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
+        this.lowerBound = min(lowerBound, upperBound);
+        this.upperBound = max(lowerBound, upperBound);
     }
 
     public boolean overlaps(Interval other) {
