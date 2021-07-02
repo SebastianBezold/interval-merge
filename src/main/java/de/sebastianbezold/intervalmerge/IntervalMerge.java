@@ -3,9 +3,7 @@ package de.sebastianbezold.intervalmerge;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import java.util.Stack;
 
 public class IntervalMerge {
 
@@ -25,44 +23,32 @@ public class IntervalMerge {
         if (intervalsToMerge == null || intervalsToMerge.isEmpty()) {
             return new ArrayList<>();
         }
-
         if (intervalsToMerge.size() == 1) {
             return new ArrayList<>(intervalsToMerge);
         }
 
         intervalsToMerge.sort(Comparator.comparingInt(a -> a.lowerBound));
+        Stack<Interval> stack = new Stack<>();
+        stack.push(intervalsToMerge.get(0));
 
-        List<Interval> resultingIntervals = new ArrayList<>();
-        for (int i = 0; i < intervalsToMerge.size() - 1; i++) {
+        // On a sorted list, we can just check if the upper bound of the n'th element is bigger
+        // than the n+1'th elements lower bound. If so, they do overlap.
+        for (int i = 1; i < intervalsToMerge.size(); i++) {
+            Interval top = stack.peek();
             Interval current = intervalsToMerge.get(i);
-            Interval next = intervalsToMerge.get(i + 1);
-            if (current.overlaps(next)) {
-                int newLowerBound = min(current.lowerBound, next.lowerBound);
-                int newUpperBound = max(current.upperBound, next.upperBound);
-                intervalsToMerge.set(i + 1, new Interval(newLowerBound, newUpperBound));
-            } else {
-                resultingIntervals.add(current);
+
+            // in ordered list -> first elements upper does not reach second elements lower means the do not overlap
+            // so add it as fully merged interval
+            if (top.upperBound < current.lowerBound) {
+                stack.push(current);
             }
-        }
-        resultingIntervals.add(intervalsToMerge.get(intervalsToMerge.size() - 1));
-
-        return resultingIntervals;
-    }
-
-    private static List<Interval> internalMerge(List<Interval> intervals) {
-        List<Interval> mergedIntervals = new ArrayList<>(intervals);
-
-        for (int i = mergedIntervals.size() - 1; i > 0; i--) {
-            Interval current = mergedIntervals.get(i);
-            Interval previous = mergedIntervals.get(i - 1);
-            if (current.overlaps(previous)) {
-                int newLowerBound = min(current.lowerBound, previous.lowerBound);
-                int newUpperBound = min(current.upperBound, previous.upperBound);
-                mergedIntervals.set(i - 1, new Interval(newLowerBound, newUpperBound));
-                mergedIntervals.remove(i);
+            // if the upper of the first element inside the second elements range push a merged element on top
+            else if (top.upperBound < current.upperBound) {
+                stack.pop();
+                stack.push(new Interval(top.lowerBound, current.upperBound));
             }
         }
 
-        return mergedIntervals;
+        return new ArrayList<>(stack);
     }
 }
