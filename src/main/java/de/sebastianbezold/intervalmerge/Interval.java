@@ -12,6 +12,10 @@ public class Interval {
         this.upperBound = upperBound;
     }
 
+    public boolean overlaps(Interval other) {
+        return lowerBound <= other.upperBound && upperBound >= other.lowerBound;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -25,5 +29,13 @@ public class Interval {
     @Override
     public int hashCode() {
         return Objects.hash(lowerBound, upperBound);
+    }
+
+    @Override
+    public String toString() {
+        return "Interval{" +
+            "lowerBound=" + lowerBound +
+            ", upperBound=" + upperBound +
+            '}';
     }
 }

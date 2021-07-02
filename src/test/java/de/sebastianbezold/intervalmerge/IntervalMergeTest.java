@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -49,6 +49,24 @@ class IntervalMergeTest {
         thenMergedIntervalsContain(new Interval(0, 9));
     }
 
+    @Test
+    void shouldNotMergeIntervalsIfTheyDoNotOverlap() {
+        givenIntervalsToMerge(
+            new Interval(1, 3),
+            new Interval(4, 7),
+            new Interval(200, 300)
+        );
+
+        whenMergingIntervals();
+
+        thenNumberOfResultingMergedIntervalsIs(3);
+        thenMergedIntervalsContain(
+            new Interval(1, 3),
+            new Interval(4, 7),
+            new Interval(200, 300)
+        );
+    }
+
     private void givenIntervalsToMerge(Interval... intervals) {
         if (intervals != null) {
             this.intervalsToMerge = Arrays.asList(intervals);
@@ -63,7 +81,7 @@ class IntervalMergeTest {
         assertThat(mergedIntervals.size(), is(count));
     }
 
-    private void thenMergedIntervalsContain(Interval interval) {
-        assertThat(mergedIntervals, hasItem(interval));
+    private void thenMergedIntervalsContain(Interval... intervals) {
+        assertThat(mergedIntervals, hasItems(intervals));
     }
 }

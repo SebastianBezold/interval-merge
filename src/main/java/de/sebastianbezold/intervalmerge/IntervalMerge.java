@@ -3,6 +3,9 @@ package de.sebastianbezold.intervalmerge;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 public class IntervalMerge {
 
     /**
@@ -22,25 +25,41 @@ public class IntervalMerge {
             return new ArrayList<>();
         }
 
-        return List.of(
-            mergeRecursive(intervalsToMerge.get(0), intervalsToMerge.subList(1, intervalsToMerge.size()))
-        );
-    }
-
-    private static Interval mergeRecursive(Interval interval, List<Interval> rest) {
-        if (rest.size() == 0) {
-            return interval;
+        if (intervalsToMerge.size() == 1) {
+            return new ArrayList<>(intervalsToMerge);
         }
 
-        if (rest.size() == 1) {
-            return mergeIntervals(interval, rest.get(0));
+        List<Interval> resultingIntervals = new ArrayList<>();
+        for (int i = 0; i < intervalsToMerge.size() - 1; i++) {
+            Interval current = intervalsToMerge.get(i);
+            Interval next = intervalsToMerge.get(i + 1);
+            if (current.overlaps(next)) {
+                int newLowerBound = min(current.lowerBound, next.lowerBound);
+                int newUpperBound = max(current.upperBound, next.upperBound);
+                intervalsToMerge.set(i + 1, new Interval(newLowerBound, newUpperBound));
+            } else {
+                resultingIntervals.add(current);
+            }
+        }
+        resultingIntervals.add(intervalsToMerge.get(intervalsToMerge.size() - 1));
+
+        return resultingIntervals;
+    }
+
+    private static List<Interval> internalMerge(List<Interval> intervals) {
+        List<Interval> mergedIntervals = new ArrayList<>(intervals);
+
+        for (int i = mergedIntervals.size() - 1; i > 0; i--) {
+            Interval current = mergedIntervals.get(i);
+            Interval previous = mergedIntervals.get(i - 1);
+            if (current.overlaps(previous)) {
+                int newLowerBound = min(current.lowerBound, previous.lowerBound);
+                int newUpperBound = min(current.upperBound, previous.upperBound);
+                mergedIntervals.set(i - 1, new Interval(newLowerBound, newUpperBound));
+                mergedIntervals.remove(i);
+            }
         }
 
-        return mergeRecursive(mergeIntervals(interval, rest.get(0)), rest.subList(1, rest.size()));
+        return mergedIntervals;
     }
-
-    private static Interval mergeIntervals(Interval a, Interval b) {
-        return new Interval(a.lowerBound, b.upperBound);
-    }
-
 }
